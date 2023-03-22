@@ -5,10 +5,10 @@ import java.nio.file.attribute.BasicFileAttributes;
 import static java.nio.file.FileVisitResult.*;
 
 public class Main {
-    static Path MASTER_SOURCE_ROOT_PATH = Path.of("C:\\Users\\rpode\\OneDrive\\Desktop\\TestFrom");
+    static Path MASTER_SOURCE_ROOT_PATH = Path.of("C:\\Users\\rpode\\OneDrive\\Desktop\\TestFrom");  //41
     static Path MASTER_DESTINATION_ROOT_PATH = Path.of("C:\\Users\\rpode\\OneDrive\\Desktop\\TestTo\\");
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args){
         manageDirectory(MASTER_SOURCE_ROOT_PATH);
         System.out.println("\nProgram complete.");
     }
@@ -29,20 +29,25 @@ public class Main {
         // Print information about each type of file.
         @Override
         public FileVisitResult visitFile(Path file, BasicFileAttributes attr) throws IOException {
-            System.out.println(file.getFileName());
+            //System.out.println(file);
             if (attr.isDirectory()) {
-                System.out.println("Directory");
+                //System.out.println("Directory");
+                //System.out.println(String.valueOf(file).substring(41));
                 manageDirectory(file);
+                shipDirectoryPath(file);
             } else {
-                System.out.println("Not Directory");
+                //System.out.println("Not Directory");
+                //shipFilePath(file);
             }
             System.out.println("");
             return CONTINUE;
         }
     }
 
-    public static void shipFilePath(Path pathToShip, Path targetFilePath) throws IOException {
-        //PASTE
+    public static void shipFilePath(Path pathToShip) throws IOException {
+
+        String targetString = String.valueOf(MASTER_DESTINATION_ROOT_PATH) + String.valueOf(pathToShip).substring(41);
+        Path targetFilePath = Path.of(targetString);
         if (!Files.exists(targetFilePath)){
             Files.copy(pathToShip, targetFilePath);
         } else {
@@ -51,6 +56,12 @@ public class Main {
             //System.out.println("Replaced " + fileName + " with an updated file");
             System.out.println("File " + pathToShip.getFileName() + " already exists. Skipping to next file.");
         }
+    }
+
+    public static void shipDirectoryPath(Path pathToShip) throws IOException {
+        String parsedPath = String.valueOf(pathToShip).substring(41);
+        Path dir = Path.of(MASTER_DESTINATION_ROOT_PATH + "\\" + parsedPath);
+        Files.createDirectories(dir);
     }
 }
 
