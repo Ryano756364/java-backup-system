@@ -7,8 +7,11 @@ import static java.nio.file.FileVisitResult.*;
 public class Main {
     static Path MASTER_SOURCE_ROOT_PATH = Path.of("C:\\Users\\rpode\\OneDrive\\Desktop\\TestFrom");
     static Path MASTER_DESTINATION_ROOT_PATH = Path.of("C:\\Users\\rpode\\OneDrive\\Desktop\\TestTo\\");
+    static public boolean secondPass = false;
 
     public static void main(String[] args){
+        manageDirectory(MASTER_SOURCE_ROOT_PATH);
+        secondPass = true;
         manageDirectory(MASTER_SOURCE_ROOT_PATH);
         System.out.println("\nProgram complete.");
     }
@@ -32,7 +35,7 @@ public class Main {
             if (attr.isDirectory()) {
                 manageDirectory(file);
                 shipDirectoryPath(file);
-            } else {
+            } else if (secondPass) {
                 shipFilePath(file);
             }
             return CONTINUE;
@@ -45,8 +48,6 @@ public class Main {
 
         if (!Files.exists(targetFilePath)){
             Files.copy(pathToShip, targetFilePath);
-        } else {
-            System.out.println("File " + pathToShip.getFileName() + " already exists. Skipping to next file.");
         }
     }
 
