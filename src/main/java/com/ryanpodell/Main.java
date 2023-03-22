@@ -1,19 +1,63 @@
 package com.ryanpodell;
 import java.io.IOException;
 import java.nio.file.*;
-import java.util.ArrayList;
+import java.nio.file.attribute.BasicFileAttributes;
+import static java.nio.file.FileVisitResult.*;
 
 public class Main {
+    static Path MASTER_SOURCE_ROOT_PATH = Path.of("C:\\Users\\rpode\\OneDrive\\Desktop\\TestFrom");
+    static Path MASTER_DESTINATION_ROOT_PATH = Path.of("C:\\Users\\rpode\\OneDrive\\Desktop\\TestTo\\");
+
     public static void main(String[] args) throws IOException {
-        //String fromFolder = "C:\\Users\\rpode\\OneDrive\\Desktop\\TestFrom";
-        //String toFolder = "C:\\Users\\rpode\\OneDrive\\Desktop\\TestTo\\";
-        //Files.copy(Path.of(fromFolder), Path.of(toFolder));
+        manageDirectory(MASTER_SOURCE_ROOT_PATH);
+        System.out.println("\nProgram complete.");
+    }
 
-        //COPY
-        ArrayList filesToCopy = new ArrayList<>();
-
-        Path dir = Path.of("C:\\Users\\rpode\\OneDrive\\Desktop\\TestFrom");
+    public static void manageDirectory(Path dir){
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(dir)) {
+            for (Path file: stream) {
+                BasicFileAttributes attr = Files.readAttributes(file, BasicFileAttributes.class);
+                AnalyzeCurrentPath analyze = new AnalyzeCurrentPath();
+                analyze.visitFile(file, attr);
+            }
+        } catch (IOException | DirectoryIteratorException x) {
+            System.err.println(x);
+        }
+    }
+
+    public static class AnalyzeCurrentPath extends SimpleFileVisitor<Path> {
+        // Print information about each type of file.
+        @Override
+        public FileVisitResult visitFile(Path file, BasicFileAttributes attr) throws IOException {
+            System.out.println(file.getFileName());
+            if (attr.isDirectory()) {
+                System.out.println("Directory");
+                manageDirectory(file);
+            } else {
+                System.out.println("Not Directory");
+            }
+            System.out.println("");
+            return CONTINUE;
+        }
+    }
+
+    public static void shipFilePath(Path pathToShip, Path targetFilePath) throws IOException {
+        //PASTE
+        if (!Files.exists(targetFilePath)){
+            Files.copy(pathToShip, targetFilePath);
+        } else {
+            //Future releases of this software to allow for option to copy file or skip
+            //Files.copy(sourceFilePath, targetFilePath, StandardCopyOption.REPLACE_EXISTING);
+            //System.out.println("Replaced " + fileName + " with an updated file");
+            System.out.println("File " + pathToShip.getFileName() + " already exists. Skipping to next file.");
+        }
+    }
+}
+
+/*
+        //COPY
+        ArrayList<Object> filesToCopy = new ArrayList<>();
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(pathToShip)) {
             for(Path file: stream){
                 filesToCopy.add(file);
             }
@@ -22,12 +66,11 @@ public class Main {
         }
 
         //PASTE
-        String toFolder = "C:\\Users\\rpode\\OneDrive\\Desktop\\TestTo\\";
         String fileName = "";
         for(Object file : filesToCopy){
             fileName = file.toString().substring(file.toString().lastIndexOf('\\') + 1);
             Path sourceFilePath = Path.of(file.toString());
-            Path targetFilePath = Path.of(toFolder + fileName);
+            Path targetFilePath = Path.of(destinationPath + fileName);
 
             if (!Files.exists(targetFilePath)){
                 Files.copy(sourceFilePath, targetFilePath);
@@ -38,10 +81,4 @@ public class Main {
                 System.out.println("File " + fileName + " already exists. Skipping to next file.");
             }
         }
-
-        System.out.println("\nProgram complete.");
-    }
-}
-
-//  "C:\\Users\\rpode\\OneDrive\\Desktop\\TestFrom\\"
-//  "C:\\Users\\rpode\\OneDrive\\Desktop\\TestTo\\"
+        */
