@@ -5,8 +5,8 @@ import java.nio.file.attribute.BasicFileAttributes;
 import static java.nio.file.FileVisitResult.*;
 
 public class Main {
-    static Path MASTER_SOURCE_ROOT_PATH = Path.of("C:\\Users\\rpode\\OneDrive\\Desktop\\TestFrom");
-    static Path MASTER_DESTINATION_ROOT_PATH = Path.of("C:\\Users\\rpode\\OneDrive\\Desktop\\TestTo\\");
+    static Path MASTER_SOURCE_ROOT_PATH = Path.of("C:\\Users\\rpode\\OneDrive\\Desktop\\FilesToShip");
+    static Path MASTER_DESTINATION_ROOT_PATH = Path.of("F:");
     static public boolean secondPass = false;
 
     public static void main(String[] args){
@@ -43,7 +43,7 @@ public class Main {
     }
 
     public static void shipFilePath(Path pathToShip) throws IOException {
-        String parsedPath = String.valueOf(pathToShip).substring(41);
+        String parsedPath = String.valueOf(pathToShip).substring(43);
         Path targetFilePath = Path.of(MASTER_DESTINATION_ROOT_PATH + "\\" + parsedPath);
 
         if (!Files.exists(targetFilePath)){
@@ -52,7 +52,7 @@ public class Main {
     }
 
     public static void shipDirectoryPath(Path pathToShip) throws IOException {
-        String parsedPath = String.valueOf(pathToShip).substring(41);
+        String parsedPath = String.valueOf(pathToShip).substring(43);
         Path dir = Path.of(MASTER_DESTINATION_ROOT_PATH + "\\" + parsedPath);
         Files.createDirectories(dir);
     }
